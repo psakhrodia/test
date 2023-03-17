@@ -1,0 +1,123 @@
+Problem Statement: Migrate data from one Delta table to another Delta table
+src: /dw_home/'/src/company/employee
+tgt: /dw_home/delta/tgt/company/employee
+tablename mysql: company.employee
+src schema: id, name, salary, joiningDate
+tgt schema: id, firstName, lastName, salary, joiningDate
+ 
+transformation: split name by ‘-‘ and create firstName and lastName
+
+
+df=spark.read.option('header',true).delta('src')
+
+
+df1=df.withColumn('firstname',split(col('name'),"-").getItem(0)).withColumn('lastname',split(col('name'),"-").getItem(1))
+
+df1.write.parquet(tgt)
+
+
+id,name,sal,jd
+
+
+
+select jd,count(id) as em_count from table group by jd order by jd desc;
+
+
+
+
+
+joiningDate, em_count
+2023/01/02 ,2
+2023/01/05 ,3
+
+
+[13:25] Naman Meena
+    
+  
+  
+  
+    
+      
+        dag example
+      
+      
+        Python
+      
+    
+    
+    
+import datetimefrom airflow 
+import DAGfrom airflow.example_dags.subdags.subdag 
+import subdagfrom airflow.operators.empty import EmptyOperatorfrom airflow.operators.subdag 
+import SubDagOperatorDAG_NAME = "example_subdag_operator"with DAG(
+    dag_id=DAG_NAME,
+    default_args={​"retries": 2}​,
+    start_date=datetime.datetime(2022, 1, 1),
+    schedule="@once",
+    tags=["example"],
+) as dag:
+    start = EmptyOperator(
+        task_id="start",
+    )
+    section_1 = SubDagOperator(
+        task_id="section-1",
+        subdag=subdag(DAG_NAME, "section-1", dag.default_args),
+    )
+    some_other_task = EmptyOperator(
+        task_id="some-other-task",
+    )
+    section_2 = SubDagOperator(
+        task_id="section-2",
+        subdag=subdag(DAG_NAME, "section-2", dag.default_args),
+    )
+    end = EmptyOperator(
+        task_id="end",
+    
+    
+start>>[section1,t1]>>section2>>end
+start>>t1>>end
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
